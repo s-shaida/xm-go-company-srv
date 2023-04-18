@@ -70,8 +70,21 @@ func (s *Server) PatchCompany(ctx context.Context, req *pb.PatchCompanyRequest) 
 		}, nil
 	}
 
+	company.Name = req.Name
+	company.Description = req.Description
+	company.AmountOfEmployees = req.Amount
+	company.Registered = req.Registered
+	company.Type = req.Type
+
+	if result := s.H.DB.Save(&company); result.Error != nil {
+		return &pb.PatchCompanyResponse{
+			Status: http.StatusBadRequest,
+			Error:  result.Error.Error(),
+		}, nil
+	}
+
 	return &pb.PatchCompanyResponse{
-		Status: http.StatusCreated,
+		Status: http.StatusOK,
 		Id:     company.Id,
 	}, nil
 }
