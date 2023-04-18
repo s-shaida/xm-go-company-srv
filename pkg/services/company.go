@@ -20,7 +20,7 @@ func (s *Server) CreateCompany(ctx context.Context, req *pb.CreateCompanyRequest
 	company.Description = req.Description
 	company.AmountOfEmployees = req.Amount
 	company.Registered = req.Registered
-	company.Type = req.Type
+	company.Type = pb.CompanyType_name[int32(req.Type.Number())]
 
 	if result := s.H.DB.Create(&company); result.Error != nil {
 		return &pb.CreateCompanyResponse{
@@ -51,7 +51,7 @@ func (s *Server) GetOneCompany(ctx context.Context, req *pb.GetOneCompanyRequest
 		Description: company.Description,
 		Amount:      company.AmountOfEmployees,
 		Registered:  company.Registered,
-		Type:        company.Type,
+		Type:        pb.CompanyType(pb.CompanyType_value[company.Type]),
 	}
 
 	return &pb.GetOneCompanyResponse{
@@ -74,7 +74,7 @@ func (s *Server) PatchCompany(ctx context.Context, req *pb.PatchCompanyRequest) 
 	company.Description = req.Description
 	company.AmountOfEmployees = req.Amount
 	company.Registered = req.Registered
-	company.Type = req.Type
+	company.Type = pb.CompanyType_name[int32(req.Type.Number())]
 
 	if result := s.H.DB.Save(&company); result.Error != nil {
 		return &pb.PatchCompanyResponse{
